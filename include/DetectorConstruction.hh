@@ -44,7 +44,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         G4VPhysicalVolume* fAbsorberPV;           // the absorber physical volume
         G4VPhysicalVolume* fTargetPV;             // the Be target to produce neutron
 
-        G4Bool fCheckOverlaps;                   // check volumes overlap
+        G4bool fCheckOverlaps;                   // check volumes overlap
 };
 
 

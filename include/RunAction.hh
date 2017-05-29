@@ -3,8 +3,8 @@
 // /// \file RunAction.hh
 // /// \brief Definition of the RunAction class
 
-#ifndef B4RunAction_h
-#define B4RunAction_h 1
+#ifndef RunAction_h
+#define RunAction_h 1
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
@@ -12,7 +12,7 @@
 class G4Run;
 
 /// Run Action Class
-// Edepin absorber, Tracl Length in Absorber
+// Edepin absorber, Track Length in Absorber
 
 class RunAction : public G4UserRunAction
 {
