@@ -25,18 +25,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     public:
         virtual G4VPhysicalVolume* Construct();
-  //        virtual void ConstructSDandField();
+        virtual void ConstructSDandField();
 
         //get Methods
         //
-      const G4VPhysicalVolume* GetAbsorberPV() const;       // For Lead Blocks to epi-thermalize
-         const G4VPhysicalVolume* GetTargetPV() const;         // For Be target to produce neutron
+        const G4VPhysicalVolume* GetAbsorberPV() const;       // For Lead Blocks to epi-thermalize
+        const G4VPhysicalVolume* GetTargetPV() const;         // For Be target to produce neutron
 
     private:
         // Methods
         //
         void DefineMaterials();
-        G4VPhysicalVolume* DefineVolumes();
+        G4VPhysicalVolume* DefineVolume();
 
         // Data members
         //
