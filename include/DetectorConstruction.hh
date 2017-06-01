@@ -1,4 +1,4 @@
-// $Id: DetectorConstruction.hh 2014-11-25 16:07:06Z ABHIJIT $
+// $Id: DetectorConstruction.hh 2017-05-29 vega $
 // // 
 // /// \file DetectorConstruction.hh
 // /// \brief Definition of the DetectorConstruction class

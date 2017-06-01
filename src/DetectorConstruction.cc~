@@ -85,12 +85,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   G4double PbArrayLength  = 150.0*cm;
   G4double PbArrayDepth   = 150.0*cm;
   G4double PbArrayHeight  = 150.0*cm;
-  auto ArrayXBy2          = 0.5 * PbArrayLength;
-  auto ArrayYBy2          = 0.5 * PbArrayHeight;
-  auto ArrayZBy2          = 0.5 * PbArrayDepth;
-  auto ArraySegX          = PbArrayLength / 3.0;
-  auto ArraySegY          = PbArrayHeight / 3.0;
-  auto ArraySegZ          = PbArrayDepth / 3.0;
   auto PbArrayXZ          = PbArrayLength * PbArrayDepth;
   auto PbArrayVolume      = (PbArrayXZ * PbArrayHeight);
   auto nofPblineX         = (int) (PbArrayLength / brickDepth + 0.5);
@@ -102,26 +96,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto worldSizeX         = 1.2 * PbArrayLength;
   auto worldSizeY         = 1.2 * PbArrayHeight;
   auto worldSizeZ         = 1.2 * PbArrayDepth;
-
-  //----- BoxBottom and BoxTop ------------------------------
-  auto BBDX =          PbArrayLength;  auto BBDY =              ArraySegY;  auto BBDZ =                 PbArrayDepth;
-  auto BTDX =                   BBDX;  auto BTDY =                   BBDY;  auto BTDZ =                         BBDZ;
-  auto BBCX =                    0.0;  auto BBCY = -ArrayYBy2 + ArraySegY;  auto BBCZ =                          0.0;
-  auto BTCX =                    0.0;  auto BTCY =  ArrayYBy2 - ArraySegY;  auto BTCZ =                          0.0;
-  //------ RectBottom and RectTop ---------------------------
-  auto RLDX =              ArraySegX;  auto RLDY =              ArraySegY;  auto RLDZ =                 PbArrayDepth;
-  auto RRDX =                   RLDX;  auto RRDY =                   RLDY;  auto RRDZ =                         RLDZ;
-  auto RLCX = -ArrayXBy2 + ArraySegX;  auto RLCY =                    0.0;  auto RLCZ =                          0.0;
-  auto RRCX =  ArrayXBy2 - ArraySegX;  auto RRCY =                    0.0;  auto RRCZ =                          0.0;
-  //----- BoxFront and BoxBack ------------------------------
-  auto BFDX =              ArraySegX;  auto BFDY =              ArraySegY;  auto BFDZ =              0.5 * ArraySegZ;
-  auto BKDX =                   BFDX;  auto BKDY =                   BFDY;  auto BKDZ =                         BFDZ;
-  auto BFCX =                    0.0;  auto BFCY =                    0.0;  auto BFCZ =            -ArrayZBy2 + BFDZ;
-  auto BKCX =                    0.0;  auto BKCY =                    0.0;  auto BKCZ =             ArrayZBy2 - BFDZ;
-  //----- Cylinder -----------------------------------------
-  auto CYLX =                    0.0;  auto CYLY =                    0.0;  auto CYLZ =                          0.0;
-  auto CYIR =                 0.3*cm;  auto CYOR =                10.0*cm;  auto CYLH =                      40.0*cm;
-  auto CBH  =                 0.3*cm;   
 
   //Get materials
   auto Pb                 = G4Material::GetMaterial("G4_Pb");
@@ -155,40 +129,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto  PbArrayS = new G4Box("LeadArray", 0.5 * PbArrayLength, 0.5 * PbArrayHeight, 0.5 * PbArrayDepth);
   auto  PbArrayLV = new G4LogicalVolume(PbArrayS, defaultMat, "LeadArrayL");             // default Material given (AIR)
   new G4PVPlacement(0, G4ThreeVector(), PbArrayLV, "LeadArrayP", worldLV, false, 0, fCheckOverlaps);
-
-  //-------------------- declare BOTTOM box area ------------------------------->
-  auto BoxBS = new G4Box("BOXBS", BBDX, BBDY, BBDZ);
-  auto BoxBL = new G4LogicalVolume(BoxBS, defaultMat, "BoxBackL");
-  new G4PVPlacement(0, G4Threevector(BBCX, BBCY, BBCZ), "BoxBP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- declare TOP box area ---------------------------------->
-  auto BoxTS = new G4Box("BOXTS", 0.5 *BTDX, 0.5 * BTDY, 0.5 * BTDZ);
-  auto BoxTL = new G4LogicalVolume(BoxTS, defaultMat, "BoxTopL");
-  new  G4PVPlacement(0, G4ThreeVector(BTCX, BTCY, BTCZ), "BoxTP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- declare LEFT rectangular paralleopipped area ---------->
-  auto RectLS = new G4Box("RECTLS", 0.5 * RLDX, 0.5 * RLDY, 0.5 * RLDZ);
-  auto RectLL = new G4LogicalVolume(RectLS, defaultMat, "RectLeftL");
-  new  G4PVPlacement(0, G4ThreeVector(RLCX, RLCY, RLCZ), "RectLP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- delcare RIGHT rectangular parallelopipped area -------->
-  auto RectRS = new G4Box("RECTRS", 0.5 * RRDX, 0.5 * RRDY, 0.5 * RRDZ);
-  auto RectRL = new G4LogicalVolume(RectRS, defaultMat, "RectRightL");
-  new G4PVPlacement(0, G4ThreeVector(RRCX, RRCY, RRCZ), "RectRP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- declare FRONT box area -------------------------------->
-  auto BoxFS = new G4Box("BOXFS", 0.5 * BFDX, 0.5 * BFDY, 0.5 * BFDZ);
-  auto BoxFL = new G4LogicalVolume(BoxFS, defaultMat, "BoxFrontL");
-  new G4PVPlacement(0, G4ThreeVector(BFCX, BFCY, BFCZ), "BoxFP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- declare BACK box area --------------------------------->
-  auto BoxKS = new G4Box("BOXKS", 0.5 * BKDX, 0.5 * BKDY, 0.5 * BKDZ);
-  auto BoxKL = new G4LogicalVolume(BoxKS, defaultMat, "BoxBackL");
-  new G4PVPlacement(0, G4ThreeVector(BKCX, BKCY, BKCZ), "BoxKP", PbArrayLV, false, 0, fCheckOverlaps);
-  //-------------------- declare LLFS contained CYLINDER ----------------------->
-  auto CylS = new G4Tubs("CanS", CYIR, CYOR, 0.5 * (CYLH - 2.0 * CBH), 0.0*deg, 360.0*deg);
-  auto LidS = new G4Tubs("LidS", 0.0, CYOR, 0.5 * CBH, 0.0*deg, 360.0*deg);
-  auto BotS = new G4Tubs("BotS", 0.0, CYOR, 0.5 * CBH, 0.0*deg, 360.0*deg);
-  //---- Move Lid to top of the Can and make Union Solid
-  auto CanLid = new G4UnionSolid(&CylS, &LidS, 0, G4ThreeVector(0.0, 0.0, 0.5 * (CYLH - 2.0 * CBH)));
-  auto LLContS = new G4UnionSolid(&CanLis, &BotS, 0, G4ThreeVector(0.0, 0.0, -0.5 * (CYLH - 2.0 * CBH)));
-  
-
 
   //--------------------- declare stacks where stacks of bricks are laid
   // Stack size brick size + 1/2 of gap between two consecutive bricks  << Arrays of stacks >>

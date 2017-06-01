@@ -1,10 +1,12 @@
-// $Id:vegaPB01.cc 75215 2014-11-25 16:07:06Z ABHIJIT $
+// $Id:vegaPB01.cc 2017-05-29 vega $
+//
+// Abhijit Bhattacharyya, BARC, MUMBAI
 //
 /// \file vegaPB01.cc
 /// \brief Main program 
 
 #include "DetectorConstruction.hh"
-//#include "ActionInitialization.hh"
+#include "ActionInitialization.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -88,10 +90,13 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(detConst);
   
   //  myPhysicsList* physicsList = new myPhysicsList();
-  //  runManager->SetUserInitialization(physicsList);
+  G4VModularPhysicsList* physicsList = new FTFP_BERT;
+  runManager->SetUserInitialization(physicsList);
     
   //  myPrimaryGeneratorAction* myGen = new myPrimaryGeneratorAction();
   //  runManager->SetUserAction(myGen);
+  ActionInitialization* actionInit = new ActionInitialization(detConst);
+  runManager->SetUserInitialization(actionInit);
   
   // Initialize G4 kernel
   //

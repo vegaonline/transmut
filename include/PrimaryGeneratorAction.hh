@@ -1,4 +1,4 @@
-// $Id: PrimaryGeneratorAction.hh 2017-05-29  $
+// $Id: PrimaryGeneratorAction.hh 2017-05-31 vega  $
 // 
 /// \file PrimaryGeneratorAction.hh
 /// \brief Definition of the PrimaryGeneratorAction class
@@ -17,7 +17,7 @@ class G4Event;
 /// It defines a single particle which hits the calorimeter 
 /// perpendicular to the input face. The type of the particle
 /// can be changed via the G4 build-in commands of G4ParticleGun class 
-/// (see the macros provided with this example).
+
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {

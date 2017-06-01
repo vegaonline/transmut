@@ -1,0 +1,4 @@
+#!/bin/sh
+rm -rf /home/vega/decrypt/WORK/TRANSMUTATION/G4/*.*~
+rm -rf /home/vega/decrypt/WORK/TRANSMUTATION/G4/src/*.*~
+rm -rf /home/vega/decrypt/WORK/TRANSMUTATION/G4/include/*.*~

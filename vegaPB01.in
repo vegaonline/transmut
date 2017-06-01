@@ -1,1 +1,8 @@
-####
+# Macro
+
+/run/initialize
+/gun/particle n
+/gun/energy 1 MeV
+/run/beamOn 100
+
+/process/list
