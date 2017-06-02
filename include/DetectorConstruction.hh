@@ -42,7 +42,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         //
         // static G4ThreadLocal G4GlobalMagFieldMessenger* fMagFieldMessenger;
         G4VPhysicalVolume* fAbsorberPV;           // the absorber physical volume
-        G4VPhysicalVolume* fTargetPV;             // the Be target to produce neutron
+        G4VPhysicalVolume* fTargetPV;             // the LLFS target to produce neutron
 
         G4bool fCheckOverlaps;                   // check volumes overlap
 };
