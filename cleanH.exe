@@ -2,4 +2,3 @@
 rm -rf /home/vega/decrypted/work/CERN/TRANSMUTATION/*.*~
 rm -rf /home/vega/decrypted/work/CERN/TRANSMUTATION/src/*.*~
 rm -rf /home/vega/decrypted/work/CERN/TRANSMUTATION/include/*.*~
-
