@@ -86,7 +86,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto HalfBrickX         = 0.5 * brickX;
   auto HalfBrickY         = 0.5 * brickY;
   auto HalfBrickZ         = 0.5 * brickZ;
-  G4double b2bGap         = 0.01*cm;
+  G4double b2bGap         = 0.1*cm;
+  auto delta              = 2.0 * b2bGap;
   auto brickYZ            = (brickY * brickZ);
   auto brickVolume        = (brickYZ * brickX); 
   // Lead Array full length
@@ -110,33 +111,33 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto worldSizeZ         = 1.2 * PbArrayZ;
 
   //----- Here we are using dx, dy and dz as half lengths to minimize computations.
-  //-------------------------------------------- BoxBottom and BoxTop ------------------------------
-  auto BBDX    =                   PbArrayX;  auto BBDY =                    PbArrayY;  auto BBDZ =          ArraySegZ;
-  auto BTDX    =                       BBDX;  auto BTDY =                        BBDY;  auto BTDZ =               BBDZ;
-  auto BBCX    =                        0.0;  auto BBCY =                         0.0;  auto BBCZ =  -ArrayZBy2 + BBDZ;
-  auto BTCX    =                        0.0;  auto BTCY =                         0.0;  auto BTCZ =              -BBCZ;
-  auto BBBTVol =       (BBDX * BBDY * BBDZ);
-  //-------------------------------------------- RectBottom and RectTop ---------------------------
-  auto RLDX    =                  ArraySegX;  auto RLDY =                    PbArrayY;  auto RLDZ =          ArraySegZ;
-  auto RRDX    =                       RLDX;  auto RRDY =                        RLDY;  auto RRDZ =               RLDZ;
-  auto RLCX    =    -ArrayXBy2 + 0.5 * RLDX;  auto RLCY =                         0.0;  auto RLCZ =                0.0;
-  auto RRCX    =                      -RLCX;  auto RRCY =                         0.0;  auto RRCZ =                0.0;
-  auto RLRRVol =       (RLDX * RLDY * RLDZ);
-  //-------------------------------------------- BoxFront and BoxBack ------------------------------
-  auto BFDX    =                  ArraySegX;  auto BFDY =             0.5 * ArraySegY;  auto BFDZ =          ArraySegZ;
-  auto BKDX    =                       BFDX;  auto BKDY =                        BFDY;  auto BKDZ =               BFDZ;
-  auto BFCX    =                        0.0;  auto BFCY =     -ArrayYBy2 + 0.5 * BFDY;  auto BFCZ =                0.0;
-  auto BKCX    =                        0.0;  auto BKCY =                       -BFCY;  auto BKCZ =                0.0;
-  auto BFBKVol =       (BFDX * BFDY * BFDZ);
-  //-------------------------------------------- BoxCentre -----------------------------------------
-  auto BCDX    =                       BFDX;  auto BCDY =  (PbArrayY - (BFDY + BKDY));  auto BCDZ =               BFDZ;
-  auto BCCX    =                        0.0;  auto BCCY =                         0.0;  auto BCCZ =                0.0;
-  //-------------------------------------------- Hole through BoxFront -----------------------------
-  auto PORTD   = 0.5 * std::min(BFDX, BFDZ);  auto PORTL=                        BFDY;
-  //-------------------------------------------- Cylinder -----------------------------------------
-  auto CYLX    =                        0.0;  auto CYLY =                         0.0;  auto CYLZ =                0.0;
-  auto CYIR    =                     0.3*cm;  auto CYOR =                     10.0*cm;  auto CYLH =            50.0*cm;
-  auto CBH     =                     0.3*cm;   
+  //---------------------------------------------------------- BoxBottom and BoxTop ------------------------------
+  auto BBDX    =                    PbArrayX - delta;  auto BBDY =                     PbArrayY - delta;  auto BBDZ =  ArraySegZ - delta;
+  auto BTDX    =                                BBDX;  auto BTDY =                                 BBDY;  auto BTDZ =               BBDZ;
+  auto BBCX    =                                 0.0;  auto BBCY =                                  0.0;  auto BBCZ =  -ArrayZBy2 + BBDZ;
+  auto BTCX    =                                 0.0;  auto BTCY =                                  0.0;  auto BTCZ =              -BBCZ;
+  auto BBBTVol =                (BBDX * BBDY * BBDZ);
+  //---------------------------------------------------------- RectBottom and RectTop ---------------------------
+  auto RLDX    =                   ArraySegX - delta;  auto RLDY =                     PbArrayY - delta;  auto RLDZ =  ArraySegZ - delta;
+  auto RRDX    =                                RLDX;  auto RRDY =                                 RLDY;  auto RRDZ =               RLDZ;
+  auto RLCX    =             -ArrayXBy2 + 0.5 * RLDX;  auto RLCY =                                  0.0;  auto RLCZ =                0.0;
+  auto RRCX    =                               -RLCX;  auto RRCY =                                  0.0;  auto RRCZ =                0.0;
+  auto RLRRVol =                (RLDX * RLDY * RLDZ);
+  //---------------------------------------------------------- BoxFront and BoxBack ------------------------------
+  auto BFDX    =                   ArraySegX - delta;  auto BFDY =              0.5 * ArraySegY - delta;  auto BFDZ =  ArraySegZ - delta;
+  auto BKDX    =                                BFDX;  auto BKDY =                                 BFDY;  auto BKDZ =               BFDZ;
+  auto BFCX    =                                 0.0;  auto BFCY =              -ArrayYBy2 + 0.5 * BFDY;  auto BFCZ =                0.0;
+  auto BKCX    =                                 0.0;  auto BKCY =                                -BFCY;  auto BKCZ =                0.0;
+  auto BFBKVol =                (BFDX * BFDY * BFDZ);
+  //---------------------------------------------------------- BoxCentre -----------------------------------------
+  auto BCDX    =                        BFDX - delta;  auto BCDY =   (PbArrayY - (BFDY + BKDY)) - delta;  auto BCDZ =       BFDZ - delta;
+  auto BCCX    =                                 0.0;  auto BCCY =                                  0.0;  auto BCCZ =                0.0;
+  //---------------------------------------------------------- Hole through BoxFront -----------------------------
+  auto PORTD   =  0.5 * std::min(BFDX, BFDZ) - delta;  auto PORTL=                         BFDY - delta;
+  //---------------------------------------------------------- Cylinder -----------------------------------------
+  auto CYLX    =                                 0.0;  auto CYLY =                                  0.0;  auto CYLZ =                0.0;
+  auto CYIR    =                              0.3*cm;  auto CYOR =                              10.0*cm;  auto CYLH =            50.0*cm;
+  auto CBH     =                              0.3*cm;   
 
   //Get materials
   auto Tc                 = G4Material::GetMaterial("G4_Tc");
