@@ -8,6 +8,9 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 
+#include "G4RunManager.hh"
+
+#include "G4GeometryManager.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4UnionSolid.hh"
@@ -17,7 +20,6 @@
 #include "G4GlobalMagFieldMessenger.hh"
 #include "G4AutoDelete.hh"
 
-#include "G4GeometryManager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
@@ -56,10 +58,6 @@ void DetectorConstruction::DefineMaterials()
 {
   G4NistManager* nistManager = G4NistManager::Instance();
 
-  G4double a;  // mass of a mole;
-  G4double z;  // z=mean number of protons;  
-  G4double density; 
-
   nistManager->FindOrBuildMaterial("G4_Tc");
   nistManager->FindOrBuildMaterial("G4_Pb");
   nistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
@@ -94,33 +92,33 @@ void DetectorConstruction::ComputeParams(){
   worldSizeX  = 1.2 * PbArrayX;        worldSizeY    = 1.2 * PbArrayY;    worldSizeZ   = 1.2 * PbArrayZ;
 
   //----- Here we are using dx, dy and dz as half lengths to minimize computations.
-  //---------------------------------------------------------- BoxBottom and BoxTop ------------------------------
-  BBDX    =                   PbArrayX - delta;  BBDY =                   PbArrayY - delta;  BBDZ =  ArraySegZ - delta;
-  BTDX    =                               BBDX;  BTDY =                               BBDY;  BTDZ =               BBDZ;
-  BBCX    =                                0.0;  BBCY =                                0.0;  BBCZ =  -ArrayZBy2 + BBDZ;
-  BTCX    =                                0.0;  BTCY =                                0.0;  BTCZ =              -BBCZ;
-  BBBTVol =               (BBDX * BBDY * BBDZ);
+  //--------------------------------------------------------- BoxBottom and BoxTop ------------------------------
+  BBDX    =                  PbArrayX ;  BBDY =                   PbArrayY;  BBDZ =          ArraySegZ;
+  BTDX    =                       BBDX;  BTDY =                       BBDY;  BTDZ =               BBDZ;
+  BBCX    =                        0.0;  BBCY =                        0.0;  BBCZ =  -ArrayZBy2 + BBDZ;
+  BTCX    =                        0.0;  BTCY =                        0.0;  BTCZ =              -BBCZ;
+  BBBTVol =       (BBDX * BBDY * BBDZ);
   //--------------------------------------------------------- RectBottom and RectTop ---------------------------
-  RLDX    =                  ArraySegX - delta;  RLDY =                   PbArrayY - delta;  RLDZ =  ArraySegZ - delta;
-  RRDX    =                               RLDX;  RRDY =                               RLDY;  RRDZ =               RLDZ;
-  RLCX    =            -ArrayXBy2 + 0.5 * RLDX;  RLCY =                                0.0;  RLCZ =                0.0;
-  RRCX    =                              -RLCX;  RRCY =                                0.0;  RRCZ =                0.0;
-  RLRRVol =               (RLDX * RLDY * RLDZ);
+  RLDX    =                  ArraySegX;  RLDY =                   PbArrayY;  RLDZ =          ArraySegZ;
+  RRDX    =                       RLDX;  RRDY =                       RLDY;  RRDZ =               RLDZ;
+  RLCX    =    -ArrayXBy2 + 0.5 * RLDX;  RLCY =                        0.0;  RLCZ =                0.0;
+  RRCX    =                      -RLCX;  RRCY =                        0.0;  RRCZ =                0.0;
+  RLRRVol =       (RLDX * RLDY * RLDZ);
   //---------------------------------------------------------- BoxFront and BoxBack ------------------------------
-  BFDX    =                  ArraySegX - delta;  BFDY =            0.5 * ArraySegY - delta;  BFDZ =  ArraySegZ - delta;
-  BKDX    =                               BFDX;  BKDY =                               BFDY;  BKDZ =               BFDZ;
-  BFCX    =                                0.0;  BFCY =            -ArrayYBy2 + 0.5 * BFDY;  BFCZ =                0.0;
-  BKCX    =                                0.0;  BKCY =                              -BFCY;  BKCZ =                0.0;
-  BFBKVol =               (BFDX * BFDY * BFDZ);
+  BFDX    =                  ArraySegX;  BFDY =            0.5 * ArraySegY;  BFDZ =          ArraySegZ;
+  BKDX    =                       BFDX;  BKDY =                       BFDY;  BKDZ =               BFDZ;
+  BFCX    =                        0.0;  BFCY =    -ArrayYBy2 + 0.5 * BFDY;  BFCZ =                0.0;
+  BKCX    =                        0.0;  BKCY =                      -BFCY;  BKCZ =                0.0;
+  BFBKVol =       (BFDX * BFDY * BFDZ);
   //--------------------------------------------------------- BoxCentre -----------------------------------------
-  BCDX    =                       BFDX - delta;  BCDY = (PbArrayY - (BFDY + BKDY)) - delta;  BCDZ =       BFDZ - delta;
-  BCCX    =                                0.0;  BCCY =                                0.0;  BCCZ =                0.0;
+  BCDX    =                       BFDX;  BCDY = (PbArrayY - (BFDY + BKDY));  BCDZ =               BFDZ;
+  BCCX    =                        0.0;  BCCY =                        0.0;  BCCZ =                0.0;
   //--------------------------------------------------------- Hole through BoxFront -----------------------------
-  PORTD   = 0.5 * std::min(BFDX, BFDZ) - delta;  PORTL=                       BFDY - delta;
+  PORTD   = 0.5 * std::min(BFDX, BFDZ);  PORTL=                       BFDY;
   //---------------------------------------------------------- Cylinder -----------------------------------------
-  CYLX    =                                0.0;  CYLY =                                0.0;  CYLZ =                0.0;
-  CYIR    =                             0.3*cm;  CYOR =                            10.0*cm;  CYLH =            50.0*cm;
-  CBH     =                             0.3*cm;   
+  CYLX    =                        0.0;  CYLY =                        0.0;  CYLZ =                0.0;
+  CYIR    =                     0.3*cm;  CYOR =                    10.0*cm;  CYLH =            50.0*cm;
+  CBH     =                     0.3*cm;   
 
   // Compute position Vector for Absorbers, Can and detectors
   posBottomAbsorber    = G4ThreeVector(BBCX, BBCY, BBCZ);
@@ -129,7 +127,7 @@ void DetectorConstruction::ComputeParams(){
   posRightRectAbsorber = G4ThreeVector(RRCX, RRCY, RRCZ);
   posFrontRectAbsorber = G4ThreeVector(BFCX, BFCY, BFCZ);
   posBackRectAbsorber  = G4ThreeVector(BKCX, BKCY, BKCZ);
-  posSourceSCan        = G4ThreeVector(BCCX, BCCY, -(BCDZ - (CYLH - 2.0 * CBH)));
+  posSourceCan         = G4ThreeVector(BCCX, BCCY, -0.5 * (BCDZ - (CYLH - 2.0 * CBH)));
 }
 
 
@@ -171,8 +169,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VisAttributes * simpleBoxVisAtt = new G4VisAttributes( G4Colour(     1.0,      1.0, 1.0      ));
 
   worldL->SetVisAttributes (G4VisAttributes::Invisible);
-  PbArrayL->SetVisAttributes (G4VisAttributes::Invisible);
-  stackL->SetVisAttributes (Yellow);
+  // PbArrayL->SetVisAttributes (G4VisAttributes::Invisible);
+  // stackL->SetVisAttributes (Yellow);
   simpleBoxVisAtt->SetVisibility(true);
   PbArrayL->SetVisAttributes(simpleBoxVisAtt);
 
@@ -181,47 +179,45 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 G4VPhysicalVolume* DetectorConstruction::ConstructAbsorberandCanister(){
   // Lead Absorber Array ------ placed at the center which contains all lead bricks 
-  auto  PbArrayS      = new G4Box("LeadArray", ArrayXBy2, ArrayYBy2, ArrayZBy2);
-  auto  PbArrayL      = new G4LogicalVolume(PbArrayS, defaultMat, "LeadArrayL");     // default Mat (AIR)
-  PbArrayP            = new G4PVPlacement(0, 
+  auto  PbArrayS                  = new G4Box("LeadArray", ArrayXBy2, ArrayYBy2, ArrayZBy2);
+  PbArrayL                        = new G4LogicalVolume(PbArrayS, defaultMat, "LeadArrayL");     // default Mat (AIR)
+  PbArrayP                        = new G4PVPlacement(0, 
 					  G4ThreeVector(), PbArrayL, "LeadArrayP", 
 					  worldL, false, 0, fCheckOverlaps);
 
   //-------------------- declare BOTTOM and TOP box area ------------------------------->
-  auto BigBoxAbsS     = new G4Box("BigBOXS", 0.5 * BBDX, 0.5 * BBDY, 0.5 * BBDZ);
-  auto FullAbsorberL  = new G4LogicalVolume(BigBoxAbsS, defaultMat, "FullAbsorberL");
-  
-  bottomAbsorber      = new G4PVPlacement(0, 
-					  posBottomAbsorber, FullAbsorberL, "BottomAbsorber",
+  auto BigBoxAbsS                 = new G4Box("BigBOXS", 0.5 * BBDX, 0.5 * BBDY, 0.5 * BBDZ);
+  G4LogicalVolume* BotTopAbsorberL  = new G4LogicalVolume(BigBoxAbsS, defaultMat, "FullAbsorberL");
+  bottomAbsorber                  = new G4PVPlacement(0, 
+					  posBottomAbsorber,BotTopAbsorberL, "BottomAbsorber",
 					  PbArrayL, false, 0);
-  topAbsorber         = new G4PVPlacement(0,
-					  posTopAbsorber, fullAbsorberL, "TopAbsorber",
+  topAbsorber                     = new G4PVPlacement(0,
+					  posTopAbsorber, BotTopAbsorberL, "TopAbsorber",
 					  PbArrayL, false, 1);
   
   //------------------- delcare LEFT and RIGHT box area ----------------------------->
-  auto RectAbsS       = new G4Box("RECTS", 0.5 * RLDX, 0.5 * RLDY, 0.5 * RLDZ);
-  auto RectAbsorberL  = new G4LogicalVolume(rectAbsS, defaultMat, "RectAbsL");
-
-  leftAbsorber        = new G4PVPlacement(0,
+  auto RectAbsS                   = new G4Box("RECTS", 0.5 * RLDX, 0.5 * RLDY, 0.5 * RLDZ);
+  G4LogicalVolume* RectAbsorberL  = new G4LogicalVolume(RectAbsS, defaultMat, "RectAbsL");
+  leftAbsorber                    = new G4PVPlacement(0,
 					  posLeftRectAbsorber, RectAbsorberL, "LeftAbsorber",
 					  PbArrayL, false, 0);
-  rightAbsorber       = new G4PVPlacement(0,
+  rightAbsorber                   = new G4PVPlacement(0,
 					  posRightRectAbsorber, RectAbsorberL, "RightAbsorber",
 					  PbArrayL, false, 1);
 
   //------------------- declare FRONT and BACK box area ------------------------------>
-  auto SmallBoxAbsS   = new G4Box("SmallBOXS", 0.5 * BFDX, 0.5 * BFDY, 0.5 * BFDZ);
-  auto PortS          = new G4Tubs("PORTS", 0.0, 0.5 * PORTD, 0.5 * PORTL, 0.0*deg, 360.0*deg);
-  auto RectPortFrontS = new G4UnionSolid("RectPortF", 
-					 BoxFS, PortS, RotXP, 
+  auto SmallBoxAbsS               = new G4Box("SmallBOXS", 0.5 * BFDX, 0.5 * BFDY, 0.5 * BFDZ);
+  auto PortS                      = new G4Tubs("PORTS", 0.0, 0.5 * PORTD, 0.5 * PORTL, 0.0*deg, 360.0*deg);
+  auto RectPortFrontS             = new G4UnionSolid("RectPortF", 
+					 SmallBoxAbsS, PortS, RotXP, 
 					 G4ThreeVector(0.0, 0.0, 0.0));
 
-  auto RectPortFrontL = new G4LogicalVolume(RectPortfrontS, defaultMat, "RectPortFrontL");
-  auto RectBackL      = new G4LogicalVolume(SmallBoxS, defaultMat, "RectBackL");
-  frontAbsorber       = new G4PVPlacement(0,
+  auto RectPortFrontL             = new G4LogicalVolume(RectPortFrontS, defaultMat, "RectPortFrontL");
+  auto RectBackL                  = new G4LogicalVolume(SmallBoxAbsS, defaultMat, "RectBackL");
+  frontAbsorber                   = new G4PVPlacement(0,
 					  posFrontRectAbsorber, RectPortFrontL, "FrontAbsorber",
 					  PbArrayL, false, 0);
-  backAbsorber        = new G4PVPlacement(0,
+  backAbsorber                    = new G4PVPlacement(0,
 					  posBackRectAbsorber, RectBackL, "BackAbsorber",
 					  PbArrayL, false, 1);
 
@@ -252,7 +248,7 @@ void DetectorConstruction::UpdateGeometry(){
   G4LogicalVolumeStore::GetInstance()->Clean();
   G4SolidStore::GetInstance()->Clean();
 
-  G4RunuManager::getRunManager()->defineWorldVolume(Construct());
+  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 
 
 }

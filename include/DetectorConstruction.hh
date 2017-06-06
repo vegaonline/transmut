@@ -8,8 +8,14 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
+#include "G4Material.hh"
+#include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
 
 class G4VPhysicalVolume;
+class G4LogicalVolume;
+class G4Material;
+class G4FieldManager;
 class G4GlobalMagFieldMessenger;
 
 // The detector is a box of High purity Lead 99.999%
@@ -24,11 +30,13 @@ public:
   virtual ~DetectorConstruction();
 
 public:
-  virtual G4VPhysicalVolume* Construct();       // construct geometry of the setup
+  G4VPhysicalVolume* Construct();       // construct geometry of the setup
   //        virtual void ConstructSDandField();
-  G4VPhysicalVolume* Construct(); 
   void UpdateGeometry();
 
+
+  const G4VPhysicalVolume* GetAbsorberPV() const;
+  const G4VPhysicalVolume* GetTargetPV() const;
 
 private:
   // Methods
@@ -57,10 +65,10 @@ private:
   G4double x0 = 0.0;
   G4double y0 = 0.0;
   G4double z0 = 0.0;
-  auto nPbX = 0;
-  auto nPbY = 0;
-  auto nPbZ = 0;
-  auto nPb = 0;
+  int nPbX = 0;
+  int nPbY = 0;
+  int nPbZ = 0;
+  int nPb = 0;
 
   //materials
   G4Material* Tc;
@@ -85,7 +93,7 @@ private:
   G4ThreeVector posTopAbsorber;
   G4ThreeVector posLeftRectAbsorber;
   G4ThreeVector posRightRectAbsorber;
-  G4ThreeVector posFrontRectabsorber;
+  G4ThreeVector posFrontRectAbsorber;
   G4ThreeVector posBackRectAbsorber;
   G4ThreeVector posSourceCan;
   G4ThreeVector posDet1;
@@ -93,49 +101,49 @@ private:
  
   // Geometry Parameters
   // brick full length
-  G4double brickX;     G4double brickY;     G4double brickZ;
-  auto HalfBrickX;     auto HalfBrickY;     auto HalfBrickZ;
-  G4double b2bGap;
-  auto delta;
-  auto brickYZ;        auto brickVolume;
+  G4double brickX;         G4double brickY;         G4double brickZ;
+  G4double HalfBrickX;     G4double HalfBrickY;     G4double HalfBrickZ;
+  G4double b2bGap;         G4double delta;
+  G4double brickYZ;        G4double brickVolume;
 
   // Lead Array full length
-  G4double PbArrayX;   G4double PbArrayY;   G4double PbArrayZ;
+  G4double PbArrayX;       G4double PbArrayY;       G4double PbArrayZ;
 
-  auto ArrayXBy2;      auto ArrayYBy2;      auto ArrayZBy2;
-  auto ArraySegX;      auto ArraySegY;      auto ArraySegZ;
-  auto ArraySegX2;     auto ArraySegY2;     auto ArraySegZ2;
-  auto PbArrayXY;      auto PbArrayVolume;  
-  auto worldSizeX;     auto worldSizeY;     auto worldSizeZ;
+  G4double ArrayXBy2;      G4double ArrayYBy2;      G4double ArrayZBy2;
+  G4double ArraySegX;      G4double ArraySegY;      G4double ArraySegZ;
+  G4double ArraySegX2;     G4double ArraySegY2;     G4double ArraySegZ2;
+  G4double PbArrayXY;      G4double PbArrayVolume;  
+  G4double worldSizeX;     G4double worldSizeY;     G4double worldSizeZ;
 
   //----- Here we are using dx, dy and dz as half lengths to minimize computations.
   //---------------------------------------------------------- BoxBottom and BoxTop ------------------------------
-  auto BBDX;    auto BBDY;    auto BBDZ;    auto BTDX;     auto BTDY;    auto BTDZ;
-  auto BBCX;    auto BBCY;    auto BBCZ;    auto BTCX;     auto BTCY;    auto BTCZ;
-  auto BBBTVol ;
+  G4double BBDX;    G4double BBDY;    G4double BBDZ;    G4double BTDX;     G4double BTDY;    G4double BTDZ;
+  G4double BBCX;    G4double BBCY;    G4double BBCZ;    G4double BTCX;     G4double BTCY;    G4double BTCZ;
+  G4double BBBTVol ;
   //--------------------------------------------------------- RectBottom and RectTop ---------------------------
-  auto RLDX;    auto RLDY;    auto RLDZ;    auto RRDX;     auto RRDY;    auto RRDZ;
-  auto RLCX;    auto RLCY;    auto RLCZ;    auto RRCX;     auto RRCY;    auto RRCZ;
-  auto RLRRVol;
+  G4double RLDX;    G4double RLDY;    G4double RLDZ;    G4double RRDX;     G4double RRDY;    G4double RRDZ;
+  G4double RLCX;    G4double RLCY;    G4double RLCZ;    G4double RRCX;     G4double RRCY;    G4double RRCZ;
+  G4double RLRRVol;
   //---------------------------------------------------------- BoxFront and BoxBack ------------------------------
-  auto BFDX;    auto BFDY;    auto BFDZ;    auto BKDX;     auto BKDY;    auto BKDZ;
-  auto BFCX;    auto BFCY;    auto BFCZ;    auto BKCX;     auto BKCY;    auto BKCZ;
-  auto BFBKVol;
+  G4double BFDX;    G4double BFDY;    G4double BFDZ;    G4double BKDX;     G4double BKDY;    G4double BKDZ;
+  G4double BFCX;    G4double BFCY;    G4double BFCZ;    G4double BKCX;     G4double BKCY;    G4double BKCZ;
+  G4double BFBKVol;
   //--------------------------------------------------------- BoxCentre -----------------------------------------
-  auto BCDX;    auto BCDY;    auto BCDZ;    auto BCCX;     auto BCCY;    auto BCCZ;
+  G4double BCDX;    G4double BCDY;    G4double BCDZ;    G4double BCCX;     G4double BCCY;    G4double BCCZ;
   //--------------------------------------------------------- Hole through BoxFront -----------------------------
-  auto PORTD;   auto PORTL;
+  G4double PORTD;   G4double PORTL;
   //---------------------------------------------------------- Cylinder -----------------------------------------
-  auto CYLX;    auto CYLY;   auto CYLZ;     auto CYIR;     auto CYOR;    auto CYLH;
-  auto CBH;   
+  G4double CYLX;    G4double CYLY;   G4double CYLZ;     G4double CYIR;     G4double CYOR;    
+  G4double CYLH;    G4double CBH;   
 
 
-  // Define Logical Volume for Geometries
+  // Define Volumes for Geometries
 
   // World
   G4LogicalVolume* worldL;
 
   // Full Absorber Volume
+  G4LogicalVolume* PbArrayL;
   G4VPhysicalVolume* PbArrayP;
 
   // BottomPlane
