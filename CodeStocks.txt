@@ -1,0 +1,64 @@
+   //-------------------- declare lead bricks
+  //Lead bricks ------  placed in array within the Lead Array object  << single objects >>
+  auto brickS = new G4Box("brickS", HalfBrickX, HalfBrickY, HalfBrickZ);
+  auto brickL = new G4LogicalVolume(brickS, Pb, "brickL");                                 // brick of Lead (Pb)
+
+  //--------------------- declare stacks where stacks of bricks are laid
+  // Stack size brick size + 1/2 of gap between two consecutive bricks  << Arrays of stacks >>
+  auto stackS = new G4Box("StackS", HalfBrickX, HalfBrickY, HalfBrickZ);
+  auto stackL = new G4LogicalVolume(stackS, defaultMat, "stackL");
+  
+  //------ STACKS :: BB + BT ------>
+  i = j = k = 1;
+  x0 = -ArrayXBy2, y0 = -ArrayYBy2, z0 = -ArrayZBy2;
+  nPbX = (int)(BBDX / brickX);             // brickX along BBX
+  nPbY = (int)(BBDY / brickY);             // brickY along BBY
+  nPbZ = (int)(BBDZ / brickZ);             // brickZ along BBZ
+  nPb  = (nPbX * nPbY * nPbZ);       // Total bricks required
+  for (int Cnt = 0; Cnt < nPb; Cnt++){
+    xnew = x0 +       i * brickX;
+    ynew = y0 + (j - 1) * brickY;
+    znew = z0 + (k - 1) * brickZ;    
+    new G4PVPlacement(0, G4ThreeVector(xnew, ynew, znew), stackL, "stackBBP", BoxBL, false, 0, fCheckOverlaps);
+    new G4PVPlacement(0, G4ThreeVector(xnew, ynew, znew + ArraySegZ2), stackL, "stackBTP", BoxTL, false, 0, fCheckOverlaps);
+    x0 = xnew;  y0 = ynew;  z0 = znew;
+    i = ((Cnt % nPbX) == 0) ?   1 : i;
+    j = ((Cnt % nPbX) == 0) ? ++j : j;
+    k = ((Cnt % nPbZ) == 0) ? ++k : k;
+  }
+  //------ STACKS :: RL + RT ------>
+  i = j = k = 1;
+  x0 = -ArrayXBy2, y0 = -ArrayYBy2, z0 = -0.5 * RLDZ;
+  nPbX = (int)(RLDX / brickY);             // brickY along RLX RRX
+  nPbY = (int)(RLDY / brickX);             // brickY along RLY RRY
+  nPbZ = (int)(RLDZ / brickZ);             // brickZ along RLZ RRZ
+  nPb  = (nPbX * nPbY * nPbZ);       // Total bricks required
+  for (int Cnt = 0; Cnt < nPb; Cnt++){
+    xnew = x0 +       i * brickY;
+    ynew = y0 + (j - 1) * brickX;
+    znew = z0 + (k - 1) * brickZ;    
+    new G4PVPlacement(RotZP, G4ThreeVector(xnew, ynew, znew)             , stackL, "stackRLP", RectLL, false, 0, fCheckOverlaps);
+    new G4PVPlacement(RotZP, G4ThreeVector(xnew + ArraySegX2, ynew, znew), stackL, "stackRRP", RectRL, false, 0, fCheckOverlaps);
+    x0 = xnew;  y0 = ynew;  z0 = znew;
+    i = ((Cnt % nPbX) == 0) ?   1 : i;
+    j = ((Cnt % nPbX) == 0) ? ++j : j;
+    k = ((Cnt % nPbZ) == 0) ? ++k : k;
+  }
+  //-------- STACKS :: BFPortL + BK ------>
+  i = j = k = 1;
+  x0 = -0.5 * BFDX, y0 = -0.5 * BFDY, z0 = -0.5 * BFDZ;
+  nPbX = (int)(BFDX / brickX);             // brickX along BFX BKX
+  nPbY = (int)(BFDY / brickY);             // brickY along BFY BKY
+  nPbZ = (int)(BFDZ / brickZ);             // brickZ along BFZ BKZ
+  nPb  = (int)( nPbX * nPbY * nPbZ);       // Total bricks required
+  for (int Cnt = 0; Cnt < nPb; Cnt++){
+    xnew = x0 +       i * brickY;
+    ynew = y0 + (j - 1) * brickX;
+    znew = z0 + (k - 1) * brickZ;    
+    new G4PVPlacement(RotZP, G4ThreeVector(xnew, ynew, znew)             , stackL, "stackBFP", BFPortL, false, 0, fCheckOverlaps);
+    new G4PVPlacement(RotZP, G4ThreeVector(xnew, ynew + ArraySegY2, znew), stackL, "stackBKP", BoxKL, false, 0, fCheckOverlaps);
+    x0 = xnew;  y0 = ynew;  z0 = znew;
+    i = ((Cnt % nPbX) == 0) ?   1 : i;
+    j = ((Cnt % nPbX) == 0) ? ++j : j;
+    k = ((Cnt % nPbZ) == 0) ? ++k : k;
+  }  
