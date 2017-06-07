@@ -76,7 +76,7 @@ private:
 
   //materials
   G4Material* Tc;
-  G4Material*  Pb;
+  G4Material* Pb;
   G4Material* steel;
   G4Material* Air;
   G4Material* Vac;
@@ -180,6 +180,7 @@ private:
   G4VisAttributes* LIGHTGREEN = new G4VisAttributes( G4Color (153/255.0, 1.0, 153/255.0) );
   G4VisAttributes* YELLOW     = new G4VisAttributes( G4Color (1.0, 1.0, 0.0) );
   G4VisAttributes* WHITE      = new G4VisAttributes( G4Color (1.0, 1.0, 1.0) );
+  
 };
 
   
