@@ -9,6 +9,10 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 #include "G4Material.hh"
+
+#include "G4Color.hh"
+#include "G4VisAttributes.hh"
+
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 
@@ -167,6 +171,15 @@ private:
   //CylindricalSource
   G4VPhysicalVolume* cylSrcCan;
 
+
+  //------------ attributes
+  G4VisAttributes* RED        = new G4VisAttributes( G4Color (1.0, 0.0, 0.0) ); 
+  G4VisAttributes* BLUE       = new G4VisAttributes( G4Color (0.0, 0.0, 1.0) );
+  G4VisAttributes* GREEN      = new G4VisAttributes( G4Color (0.0, 1.0, 0.0) );
+  G4VisAttributes* LIGHTBLUE  = new G4VisAttributes( G4Color (0.0, 204/255.0, 204/255.0) );
+  G4VisAttributes* LIGHTGREEN = new G4VisAttributes( G4Color (153/255.0, 1.0, 153/255.0) );
+  G4VisAttributes* YELLOW     = new G4VisAttributes( G4Color (1.0, 1.0, 0.0) );
+  G4VisAttributes* WHITE      = new G4VisAttributes( G4Color (1.0, 1.0, 1.0) );
 };
 
   

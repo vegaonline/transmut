@@ -1,0 +1,6 @@
+# /vis/open OGL 600x600-0+0
+# /vis/open RAYTRACER
+/vis/open HepRepFile
+/vis/drawVolume
+/vis/viewer/set/autoRefresh true
+/vis/verbose errors

@@ -44,16 +44,17 @@ target_link_libraries(vegaPB01 ${Geant4_LIBRARIES})
 # relies on these scripts being in the current working directory.
 #
 set(VEGAPB01_SCRIPTS
-  vegaPB01.out
-  vegaPB01.in
-  icons.mac
-  gui.mac
-  run.png
-  init.mac
-  init_vis.mac
-  run1.mac
-  run2.mac
-  vis.mac
+    #  vegaPB01.out
+    #vegaPB01.in
+    icons.mac
+    gui.mac
+    run.png
+    init.mac
+    init_vis.mac
+    #run1.mac
+    #run2.mac
+    #vis.mac
+    myvis.mac
   )
 
 foreach(_script ${VEGAPB01_SCRIPTS})

@@ -161,18 +161,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Construction of Lead Absorber and placement of Source Canister
   ConstructAbsorberandCanister();
 
-  // visualization attributes
-  G4VisAttributes * Red             = new G4VisAttributes( G4Colour(255/255., 0/255.  , 0/255.   ));
-  G4VisAttributes * Yellow          = new G4VisAttributes( G4Colour(255/255., 255/255., 0/255.   ));
-  G4VisAttributes * LightBlue       = new G4VisAttributes( G4Colour(0/255.  , 204/255., 204/255. ));
-  G4VisAttributes * LightGreen      = new G4VisAttributes( G4Colour(153/255., 255/255., 153/255. ));
-  G4VisAttributes * simpleBoxVisAtt = new G4VisAttributes( G4Colour(     1.0,      1.0, 1.0      ));
 
   worldL->SetVisAttributes (G4VisAttributes::Invisible);
   // PbArrayL->SetVisAttributes (G4VisAttributes::Invisible);
   // stackL->SetVisAttributes (Yellow);
-  simpleBoxVisAtt->SetVisibility(true);
-  PbArrayL->SetVisAttributes(simpleBoxVisAtt);
+
+  PbArrayL->SetVisAttributes(YELLOW);
 
   return worldP;
 }
