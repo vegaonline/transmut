@@ -8,17 +8,14 @@
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
 
-#ifdef G4MULTITHREADED
-#include "G4MTRunManager.hh"
-#else
-#include "G4RunManager.hh"
-#endif
+#include "Randomize.hh"
 
+#include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4UIcommand.hh"
+
 #include "FTFP_BERT.hh"
 
-#include "Randomize.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -33,7 +30,7 @@
 namespace {
   void PrintUsage() {
     G4cerr << " Usage: " << G4endl;
-    G4cerr << " vegaPB01 [-m macro ] [-u UIsession] [-t nThreads]" << G4endl;
+    G4cerr << " vegaPB01 [-m macro ] [-u UIsession] " << G4endl;
     G4cerr << "   note: -t option is available only for multi-threaded mode."
            << G4endl;
   }
@@ -52,17 +49,10 @@ int main(int argc,char** argv)
   
   G4String macro;
   G4String session;
-#ifdef G4MULTITHREADED
-  G4int nThreads = 0;
-#endif
+
   for ( G4int i=1; i<argc; i=i+2 ) {
     if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
     else if ( G4String(argv[i]) == "-u" ) session = argv[i+1];
-#ifdef G4MULTITHREADED
-    else if ( G4String(argv[i]) == "-t" ) {
-      nThreads = G4UIcommand::ConvertToInt(argv[i+1]);
-    }
-#endif
     else {
       PrintUsage();
       return 1;
@@ -71,18 +61,14 @@ int main(int argc,char** argv)
   
   // Choose the Random engine
   //
-  G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  //      G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  CLHEP::HepRandom::setTheEngine(new CLHEP::MTwistEngine);
   
   // Construct the default run manager
   //
-#ifdef G4MULTITHREADED
-  G4MTRunManager * runManager = new G4MTRunManager;
-  if ( nThreads > 0 ) { 
-    runManager->SetNumberOfThreads(nThreads);
-  }  
-#else
+
   G4RunManager * runManager = new G4RunManager;
-#endif
+
 
   // Set mandatory initialization classes
   //
@@ -101,8 +87,6 @@ int main(int argc,char** argv)
   // Initialize G4 kernel
   //
   runManager->Initialize();
-
-
   
 #ifdef G4VIS_USE
   // Initialize visualization
